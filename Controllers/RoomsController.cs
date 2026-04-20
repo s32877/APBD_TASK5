@@ -25,4 +25,12 @@ public class RoomsController : ControllerBase
         return Ok(room);
         
     }
+
+    [HttpPost]
+    public ActionResult<Room> Create(Room room)
+    {
+        room.Id = Database.DataStore.NextRoomId;
+        Database.DataStore.Rooms.Add(room);
+        return  CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
+    }
 }
