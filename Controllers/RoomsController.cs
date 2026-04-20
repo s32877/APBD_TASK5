@@ -7,9 +7,13 @@ namespace APBD_TASK5.Controllers;
 public class RoomsController : ControllerBase
 {
     [HttpGet]
-    public ActionResult<List<Room>> GetAll()
+    public ActionResult<List<Room>> GetAll(
+        [FromQuery] int? minCapacity
+        )
     {
         var rooms = Database.DataStore.Rooms.AsEnumerable();
+        if (minCapacity.HasValue)
+            rooms = rooms.Where(r => r.Capacity >= minCapacity.Value);
         return Ok(rooms.ToList());
     }
 
@@ -32,5 +36,14 @@ public class RoomsController : ControllerBase
         room.Id = Database.DataStore.NextRoomId;
         Database.DataStore.Rooms.Add(room);
         return  CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
+    }
+
+    [HttpGet("building/{buildingCode}")]
+    public ActionResult<Room> GetByBuilding(string buildingCode)
+    {
+        var rooms = Database.DataStore.Rooms
+            .Where(r => r.BuildingCode.Equals(buildingCode, StringComparison.OrdinalIgnoreCase))
+            .ToList;
+        return Ok(rooms);
     }
 }
