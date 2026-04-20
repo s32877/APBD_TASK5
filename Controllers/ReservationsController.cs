@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace APBD_TASK5.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class ReservationController : ControllerBase
+public class ReservationsController : ControllerBase
 {
     [HttpGet]
     public ActionResult<List<Reservation>> GetAll(
