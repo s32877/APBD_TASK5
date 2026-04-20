@@ -38,6 +38,8 @@ public class ReservationController : ControllerBase
         var roomExists = Database.DataStore.Rooms.Any(r => r.Id == reservation.RoomId);
         if (!roomExists)
             return BadRequest($"Room with id {reservation.RoomId} does not exist");
+        if (reservation.EndTime <= reservation.StartTime)
+            return BadRequest("EndTime must be later than StartTime.");
 
         reservation.Id = Database.DataStore.NextReservationId;
         Database.DataStore.Reservations.Add(reservation);
