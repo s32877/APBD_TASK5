@@ -40,6 +40,14 @@ public class ReservationsController : ControllerBase
             return BadRequest($"Room with id {reservation.RoomId} does not exist");
         if (reservation.EndTime <= reservation.StartTime)
             return BadRequest("EndTime must be later than StartTime.");
+        var overlap = Database.DataStore.Reservations.Any(r =>
+            r.RoomId == reservation.RoomId &&
+            r.Date == reservation.Date &&
+            r.StartTime < reservation.EndTime &&
+            r.EndTime > reservation.StartTime);
+
+        if (overlap)
+            return Conflict("A reservation for this room already exists in the given time slot.");
 
         reservation.Id = Database.DataStore.NextReservationId;
         Database.DataStore.Reservations.Add(reservation);
