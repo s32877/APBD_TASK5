@@ -12,5 +12,17 @@ public class RoomsController : ControllerBase
         var rooms = Database.DataStore.Rooms.AsEnumerable();
         return Ok(rooms.ToList());
     }
-    
+
+    [HttpGet("{id:int}")]
+    public ActionResult<Room> GetById(int id)
+    {
+        var room = Database.DataStore.Rooms.FirstOrDefault(r => r.Id == id);
+        if (room == null)
+        {
+            return NotFound($"Room with id {id} not found");
+        }
+
+        return Ok(room);
+        
+    }
 }
